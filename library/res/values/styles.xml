@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="FbLikeButtonText">
+        <item name="android:textSize">@dimen/fb_like_text_size</item>
+        <item name="android:textColor">@color/fb_like_text</item>
+    </style>
+    
+    <style name="FbLikeButtonCloudText">
+        <item name="android:textSize">@dimen/fb_like_cloud_text_size</item>
+        <item name="android:textColor">@color/fb_like_cloud_text</item>
+        <item name="android:paddingLeft">@dimen/fb_like_cloud_text_padding_left</item>
+        <item name="android:paddingRight">@dimen/fb_like_cloud_text_padding_right</item>
+    </style>
+    
+</resources>
