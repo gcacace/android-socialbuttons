@@ -28,11 +28,26 @@ or
 
 **Maven dependency:**
 ``` xml
-<dependency>
-	<groupId>it.gcacace.facebook.sharesbutton</groupId>
-	<artifactId>library</artifactId>
-	<version>0.1</version>
-</dependency>
+<repositories>
+	...
+	<repository>
+		<id>ciaopeople-inhouse</id>
+		<name>CiaoPeople Repository Inhouse</name>
+		<url>http://maven.fanpage.it/inhouse/</url>
+	</repository>
+	...
+</repositories>
+...
+<dependencies>
+	...
+	<dependency>
+		<groupId>it.gcacace.facebook.sharesbutton</groupId>
+		<artifactId>library</artifactId>
+		<version>0.1</version>
+		<type>apklib</type>
+	</dependency>
+	...
+</dependencies>
 ```
 
 #### 2. Android Manifest
