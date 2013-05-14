@@ -12,6 +12,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -29,9 +30,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-public class SharesButton extends LinearLayout {
+public class FacebookSharesButton extends LinearLayout {
 
-	String mSharesUrl = null;
+	public static final int TYPE_NORMAL = 0;
+	public static final int TYPE_MEDIUM = 1;
+
+	public static final int ANNOTATION_NONE = 0;
+	public static final int ANNOTATION_BUBBLE = 1;
+	public static final int ANNOTATION_BUBBLE_ONLOAD = 2;
+
+	private String mSharesUrl = null;
+	private int mAnnotation = ANNOTATION_NONE;
+	private int mType = ANNOTATION_NONE;
+	private boolean mFetched = false;
 
 	private class SharesCountFetcherTask extends AsyncTask<String, Void, Long> {
 
@@ -42,21 +53,24 @@ public class SharesButton extends LinearLayout {
 			HttpResponse response;
 			Long shares = null;
 			try {
-				response = httpclient.execute(new HttpGet("http://graph.facebook.com/" + uri[0]));
+
+				HttpGet getRequest = new HttpGet("http://graph.facebook.com/fql?q=" + URLEncoder.encode("SELECT total_count FROM link_stat WHERE url='" + uri[0] + "'", "UTF-8"));
+				response = httpclient.execute(getRequest);
 				StatusLine statusLine = response.getStatusLine();
 				if(statusLine.getStatusCode() == HttpStatus.SC_OK){
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					response.getEntity().writeTo(out);
 					out.close();
 					JSONObject result = new JSONObject(out.toString());
-					shares = result.getLong("shares");
+					JSONArray data = result.getJSONArray("data");
+					shares = ((JSONObject)data.get(0)).getLong("total_count");
 				} else{
 					//Closes the connection.
 					response.getEntity().getContent().close();
 					throw new IOException(statusLine.getReasonPhrase());
 				}
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 			return shares;
 
@@ -67,13 +81,21 @@ public class SharesButton extends LinearLayout {
 
 			TextView sharesText = (TextView) findViewById(R.id.fb_like_cloud_text);
 			ProgressBar sharesProgress = (ProgressBar) findViewById(R.id.fb_like_cloud_progress);
+			View sharesCloud = findViewById(R.id.fb_like_cloud);
 
 			if(result != null) {
-				sharesText.setText(UIUtils.numberToShortenedString(result));
+				mFetched = true;
+				sharesText.setText(UIUtils.numberToShortenedString(getContext(), result));
 			} else {
+				mFetched = false;
 				sharesText.setText(getResources().getString(R.string.fb_like_failed));
 			}
 
+			if(mAnnotation == ANNOTATION_BUBBLE || (mAnnotation == ANNOTATION_BUBBLE_ONLOAD && mFetched)) {
+				sharesCloud.setVisibility(View.VISIBLE);
+			} else {
+				sharesCloud.setVisibility(View.GONE);
+			}
 			sharesProgress.setVisibility(View.GONE);
 			sharesText.setVisibility(View.VISIBLE);
 
@@ -81,36 +103,66 @@ public class SharesButton extends LinearLayout {
 
 	}
 
-	public SharesButton(Context context) {
+	public FacebookSharesButton(Context context) {
 		super(context);
 		initView(null);
 	}
 
 	@SuppressLint("NewApi")
-	public SharesButton(Context context, AttributeSet attrs, int defStyle) {
+	public FacebookSharesButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
 		initView(attrs);
 	}
 
-	public SharesButton(Context context, AttributeSet attrs) {
+	public FacebookSharesButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView(attrs);
 	}
 
 	private void initView(AttributeSet attrs) {
 		LayoutInflater inflater = LayoutInflater.from(getContext());
-		inflater.inflate(R.layout.button_shares, this, true);
 
 		if(attrs != null) {
 
-			TypedArray a = getContext().obtainStyledAttributes(attrs,R.styleable.SharesButton);
-			setSharesUrl(a.getString(R.styleable.SharesButton_sharesUrl));
+			TypedArray a = getContext().obtainStyledAttributes(attrs,R.styleable.FacebookSharesButton);
+			setSharesUrl(a.getString(R.styleable.FacebookSharesButton_sharesUrl));
+			setType(a.getInt(R.styleable.FacebookSharesButton_type, TYPE_NORMAL));
+			setAnnotation(a.getInt(R.styleable.FacebookSharesButton_annotation, ANNOTATION_NONE));
+
 			a.recycle();
 
-			if(!isInEditMode()) {
-				fetchShares();
-			}
+		}
 
+		// Inflating the right layout
+		switch(mType) {
+
+		case TYPE_MEDIUM:
+
+			inflater.inflate(R.layout.button_shares_medium, this);
+			break;
+
+		default:
+
+			inflater.inflate(R.layout.button_shares_normal, this);
+
+		}
+
+		// Enabling bubble if needed
+		switch(mAnnotation) {
+
+		case ANNOTATION_BUBBLE:
+
+			findViewById(R.id.fb_like_cloud).setVisibility(View.VISIBLE);
+			break;
+			
+		default:
+
+			findViewById(R.id.fb_like_cloud).setVisibility(View.GONE);
+
+		}
+
+		if(!isInEditMode() || mAnnotation != ANNOTATION_NONE) {
+			fetchShares();
 		}
 
 		setOnClickListener(new OnClickListener() {
@@ -163,6 +215,36 @@ public class SharesButton extends LinearLayout {
 	}
 
 	/**
+	 * Getter for the attribute <b>annotation</b>
+	 */
+	public int getAnnotation() {
+		return mAnnotation;
+	}
+
+	/**
+	 * Setter for the attribute <b>annotation</b>
+	 * @param annotation the kind of annotation display, can be {@link #ANNOTATION_NONE}, {@link #ANNOTATION_BUBBLE} and {@link #ANNOTATION_BUBBLE_ONLOAD}
+	 */
+	public void setAnnotation(int annotation) {
+		mAnnotation = annotation;
+	}
+
+	/**
+	 * Getter for the attribute <b>type</b>
+	 */
+	public int getType() {
+		return mType;
+	}
+
+	/**
+	 * Setter for the attribute <b>type</b>
+	 * @param type the kind of share button, in size, can be {@link #TYPE_NORMAL} and {@link #TYPE_MEDIUM}
+	 */
+	public void setType(int type) {
+		mType = type;
+	}
+
+	/**
 	 * This method execute an asynchronous HTTP call to Facebook Graph Apis,
 	 * to fetch the shares count of the <b>sharesUrl</b>.
 	 * Before calling this method, please set this value using {@link #setSharesUrl(String)}.
@@ -170,7 +252,7 @@ public class SharesButton extends LinearLayout {
 	public void fetchShares() {
 
 		String sharesUrl = getSharesUrl();
-		if(sharesUrl != null) {
+		if(sharesUrl != null && !mFetched) {
 
 			TextView sharesText = (TextView) findViewById(R.id.fb_like_cloud_text);
 			ProgressBar sharesProgress = (ProgressBar) findViewById(R.id.fb_like_cloud_progress);
@@ -184,4 +266,8 @@ public class SharesButton extends LinearLayout {
 
 	}
 
+	public void refreshShares() {
+		mFetched = false;
+		fetchShares();
+	}
 }

@@ -38,8 +38,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.6</java.version>
-		<android.version>2.2</android.version>
-		<android.platform>8</android.platform>
+		<android.version>4.1.1.4</android.version>
+		<android.platform>16</android.platform>
 		<android-maven.version>3.2.0</android-maven.version>
 	</properties>
 	<dependencyManagement>
@@ -50,6 +50,11 @@
 				<version>${android.version}</version>
 				<scope>provided</scope>
 			</dependency>
+            <dependency>
+                <groupId>com.google.android</groupId>
+                <artifactId>annotations</artifactId>
+                <version>${android.version}</version>
+            </dependency>
 		</dependencies>
 	</dependencyManagement>
 	<build>
@@ -69,22 +74,21 @@
 						<tagNameFormat>v@{project.version}</tagNameFormat>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-					<artifactId>android-maven-plugin</artifactId>
-					<version>${android-maven.version}</version>
-					<configuration>
-						<sdk>
-							<platform>${android.platform}</platform>
-						</sdk>
-						<undeployBeforeDeploy>true</undeployBeforeDeploy>
-						<source>${sourceCompatibility}</source>
-						<target>${sourceCompatibility}</target>
-					</configuration>
-					<extensions>true</extensions>
-				</plugin>
 			</plugins>
 		</pluginManagement>
-		<sourceDirectory>src</sourceDirectory>
-	</build>
+        <sourceDirectory>src</sourceDirectory>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>mgmt-fanpage</id>
+            <url>scpexe://giallo@mgmt.fanpage.it/var/www/maven/inhouse</url>
+        </repository>
+    </distributionManagement>
 </project>

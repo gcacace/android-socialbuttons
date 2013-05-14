@@ -1,6 +1,6 @@
 package it.gcacace.facebook.sharesbutton.demo;
 
-import it.gcacace.facebook.sharesbutton.SharesButton;
+import it.gcacace.facebook.sharesbutton.FacebookSharesButton;
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -12,7 +12,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 		// Find the second SharesButton from the inflated layout
-		SharesButton sharesButton = (SharesButton) findViewById(R.id.sharesButton2);
+		FacebookSharesButton sharesButton = (FacebookSharesButton) findViewById(R.id.sharesButton2);
 		
 		// Set sharesUrl to an URL
 		sharesButton.setSharesUrl("http://mobile.fanpage.it/segui-la-diretta-del-google-i-o-2103/");
