@@ -1,4 +1,4 @@
-package it.gcacace.facebook.sharesbutton;
+package it.gcacace.android.socialbuttons;
 
 import java.text.DecimalFormat;
 

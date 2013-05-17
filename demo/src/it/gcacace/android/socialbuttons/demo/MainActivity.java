@@ -1,8 +1,8 @@
-package it.gcacace.facebook.sharesbutton.demo;
+package it.gcacace.android.socialbuttons.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
-import it.gcacace.facebook.sharesbutton.TwitterSharesButton;
+import it.gcacace.android.socialbuttons.TwitterSharesButton;
 
 public class MainActivity extends Activity {
 

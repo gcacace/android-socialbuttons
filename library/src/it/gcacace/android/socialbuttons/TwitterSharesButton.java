@@ -1,4 +1,4 @@
-package it.gcacace.facebook.sharesbutton;
+package it.gcacace.android.socialbuttons;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,7 +12,6 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
@@ -30,7 +29,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-public class FacebookSharesButton extends LinearLayout {
+public class TwitterSharesButton extends LinearLayout {
 
 	public static final int TYPE_NORMAL = 0;
 	public static final int TYPE_MEDIUM = 1;
@@ -40,6 +39,8 @@ public class FacebookSharesButton extends LinearLayout {
 	public static final int ANNOTATION_BUBBLE_ONLOAD = 2;
 
 	private String mSharesUrl = null;
+	private String mSharesPrefix = null;
+	private String mSharesSuffix = null;
 	private int mAnnotation = ANNOTATION_NONE;
 	private int mType = ANNOTATION_NONE;
 	private boolean mFetched = false;
@@ -54,7 +55,7 @@ public class FacebookSharesButton extends LinearLayout {
 			Long shares = null;
 			try {
 
-				HttpGet getRequest = new HttpGet("http://graph.facebook.com/fql?q=" + URLEncoder.encode("SELECT total_count FROM link_stat WHERE url='" + uri[0] + "'", "UTF-8"));
+				HttpGet getRequest = new HttpGet("http://urls.api.twitter.com/1/urls/count.json?url=" + URLEncoder.encode(uri[0], "UTF-8"));
 				response = httpclient.execute(getRequest);
 				StatusLine statusLine = response.getStatusLine();
 				if(statusLine.getStatusCode() == HttpStatus.SC_OK){
@@ -62,8 +63,7 @@ public class FacebookSharesButton extends LinearLayout {
 					response.getEntity().writeTo(out);
 					out.close();
 					JSONObject result = new JSONObject(out.toString());
-					JSONArray data = result.getJSONArray("data");
-					shares = ((JSONObject)data.get(0)).getLong("total_count");
+					shares = result.getLong("count");
 				} else{
 					//Closes the connection.
 					response.getEntity().getContent().close();
@@ -103,18 +103,18 @@ public class FacebookSharesButton extends LinearLayout {
 
 	}
 
-	public FacebookSharesButton(Context context) {
+	public TwitterSharesButton(Context context) {
 		super(context);
 		initView(null);
 	}
 
 	@SuppressLint("NewApi")
-	public FacebookSharesButton(Context context, AttributeSet attrs, int defStyle) {
+	public TwitterSharesButton(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
 		initView(attrs);
 	}
 
-	public FacebookSharesButton(Context context, AttributeSet attrs) {
+	public TwitterSharesButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		initView(attrs);
 	}
@@ -124,10 +124,12 @@ public class FacebookSharesButton extends LinearLayout {
 
 		if(attrs != null) {
 
-			TypedArray a = getContext().obtainStyledAttributes(attrs,R.styleable.FacebookSharesButton);
-			setSharesUrl(a.getString(R.styleable.FacebookSharesButton_fbsharesUrl));
-			setType(a.getInt(R.styleable.FacebookSharesButton_fbtype, TYPE_NORMAL));
-			setAnnotation(a.getInt(R.styleable.FacebookSharesButton_fbannotation, ANNOTATION_NONE));
+			TypedArray a = getContext().obtainStyledAttributes(attrs,R.styleable.TwitterSharesButton);
+			setSharesUrl(a.getString(R.styleable.TwitterSharesButton_twsharesUrl));
+			setSharesPrefix(a.getString(R.styleable.TwitterSharesButton_twsharesPrefix));
+			setSharesSuffix(a.getString(R.styleable.TwitterSharesButton_twsharesSuffix));
+			setType(a.getInt(R.styleable.TwitterSharesButton_twtype, TYPE_NORMAL));
+			setAnnotation(a.getInt(R.styleable.TwitterSharesButton_twannotation, ANNOTATION_NONE));
 
 			a.recycle();
 
@@ -135,20 +137,18 @@ public class FacebookSharesButton extends LinearLayout {
 
 		// Inflating the right layout
 		switch(mType) {
-
-		case TYPE_MEDIUM:
-
-			inflater.inflate(R.layout.button_shares_medium, this);
-			break;
-
+		
 		default:
 
-			inflater.inflate(R.layout.button_shares_normal, this);
+			inflater.inflate(R.layout.button_twitter_normal, this);
 
-		}
+        }
 
-		// Enabling bubble if needed
         checkAndManageAnnotation();
+
+		if(!isInEditMode() || mAnnotation != ANNOTATION_NONE) {
+			fetchShares();
+		}
 
 		setOnClickListener(new OnClickListener() {
 
@@ -159,14 +159,25 @@ public class FacebookSharesButton extends LinearLayout {
 				if(sharesUrl != null) {
 					Intent shareIntent = new Intent(Intent.ACTION_SEND);
 					shareIntent.setType("text/plain");
-					shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, sharesUrl);
-					shareIntent.setPackage("com.facebook.katana");
+					
+					String text = sharesUrl;
+					
+					if(getSharesPrefix() != null) {
+						text = getSharesPrefix() + " " + text;
+					}
+					
+					if(getSharesSuffix() != null) {
+						text = text + " " + getSharesSuffix();
+					}
+					
+					shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, text);
+					shareIntent.setPackage("com.twitter.android");
 					List<ResolveInfo> resInfo = getContext().getPackageManager().queryIntentActivities(shareIntent, 0);
 					if (resInfo == null || resInfo.isEmpty()){
 
 						shareIntent = new Intent();
-						try {
-							shareIntent.setData(Uri.parse("https://www.facebook.com/sharer/sharer.php?u=" + URLEncoder.encode(sharesUrl, "UTF-8")));
+						try {							
+							shareIntent.setData(Uri.parse("https://twitter.com/share?url=" + URLEncoder.encode(sharesUrl, "UTF-8")));
 							shareIntent.setAction(Intent.ACTION_VIEW);
 						} catch (UnsupportedEncodingException e) {
 							shareIntent.setData(Uri.parse(sharesUrl));
@@ -217,6 +228,22 @@ public class FacebookSharesButton extends LinearLayout {
 		return mSharesUrl;
 	}
 
+	public String getSharesPrefix() {
+		return mSharesPrefix;
+	}
+
+	public void setSharesPrefix(String sharesPrefix) {
+		mSharesPrefix = sharesPrefix;
+	}
+
+	public String getSharesSuffix() {
+		return mSharesSuffix;
+	}
+
+	public void setSharesSuffix(String sharesSuffix) {
+		mSharesSuffix = sharesSuffix;
+	}
+
 	/**
 	 * Getter for the attribute <b>annotation</b>
 	 */
@@ -254,7 +281,6 @@ public class FacebookSharesButton extends LinearLayout {
 	 */
 	public void fetchShares() {
 
-        // Enabling bubble if needed
         checkAndManageAnnotation();
 
 		String sharesUrl = getSharesUrl();
