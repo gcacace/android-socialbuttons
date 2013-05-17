@@ -1,14 +1,18 @@
-Facebook Like Button
+Android Social Buttons
 =============================
 
-A simple Facebook Like Button for Android, with shares count.
+A set of social buttons with shares count, and interactions with native apps, to let the user share links using his favourite social apps.
 
 ![Screenshot](https://github.com/gcacace/android-facebook-sharesbutton/raw/master/screenshot.png)
 
+## Social Networks Supported
+ * Facebook
+ * Twitter
+
 ## Features
- * No Facebook SDK needed
+ * No Facebook or Twitter SDK needed
  * No tricky WebView
- * Native Facebook App detection
+ * Native Social App detection
  * Shares count in a formatted Facebook style
  * Localized in english, french, german, italian and spanish
 
@@ -29,7 +33,7 @@ or
 **Maven dependency:**
 ``` xml
 <dependency>
-	<groupId>it.gcacace.facebook.sharesbutton</groupId>
+	<groupId>it.gcacace.android.socialbuttons</groupId>
 	<artifactId>library</artifactId>
 	<version>0.1</version>
 </dependency>
@@ -51,15 +55,14 @@ or
 **With URL inside XML:**
 ``` xml
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:fbshares="http://schemas.android.com/apk/res/it.gcacace.facebook.sharesbutton.demo">
+    xmlns:tools="http://schemas.android.com/tools">
 	...
-    <it.gcacace.facebook.sharesbutton.SharesButton
+    <it.gcacace.android.socialbuttons.FacebookSharesButton
+        xmlns:socialbutton="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sharesButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        fbshares:sharesUrl="http://www.facebook.com/" >
-    </it.gcacace.facebook.sharesbutton.SharesButton>
+        socialbutton:fbsharesUrl="http://www.facebook.com/" />
 	...
 </LinearLayout>
 ```
@@ -74,7 +77,7 @@ protected void onCreate(Bundle savedInstanceState) {
 	setContentView(R.layout.activity_main);
 	...
 	// Find the second SharesButton from the inflated layout
-	SharesButton sharesButton = (SharesButton) findViewById(R.id.sharesButton2);
+	FacebookSharesButton sharesButton = (FacebookSharesButton) findViewById(R.id.sharesButton2);
 	
 	// Set sharesUrl to an URL
 	sharesButton.setSharesUrl("http://mobile.fanpage.it/segui-la-diretta-del-google-i-o-2103/");

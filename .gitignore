@@ -18,3 +18,9 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+# Idea 12
+.idea
+*.iml
+*.lock
+target/

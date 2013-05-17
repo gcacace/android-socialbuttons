@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="FacebookSharesButton">
-        <attr name="sharesUrl" format="string" />
-        <attr name="type">
+        <attr name="fbsharesUrl" format="string" />
+        <attr name="fbtype">
             <enum name="normal" value="0" />
             <enum name="medium" value="1" />
         </attr>
-        <attr name="annotation">
+        <attr name="fbannotation">
+            <enum name="none" value="0" />
+            <enum name="bubble" value="1" />
+            <enum name="bubble_onload" value="2" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="TwitterSharesButton">
+        <attr name="twsharesUrl" format="string" />
+        <attr name="twsharesPrefix" format="string" />
+        <attr name="twsharesSuffix" format="string" />
+        <attr name="twtype">
+            <enum name="normal" value="0" />
+        </attr>
+        <attr name="twannotation">
             <enum name="none" value="0" />
             <enum name="bubble" value="1" />
             <enum name="bubble_onload" value="2" />
