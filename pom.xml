@@ -31,7 +31,7 @@
 	</developers>
 	<modules>
 		<module>library</module>
-		<module>demo</module>
+	    <module>demo</module>
 	</modules>
 	<properties>
 		<!-- build settings -->
@@ -76,7 +76,6 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-        <sourceDirectory>src</sourceDirectory>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>

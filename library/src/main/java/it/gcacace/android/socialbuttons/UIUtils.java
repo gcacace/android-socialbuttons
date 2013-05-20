@@ -10,8 +10,14 @@ public class UIUtils {
 		
 		if(num < 1000)
 			return num.toString();
-		
-		DecimalFormat oneDForm = new DecimalFormat("###,###.#");
+
+        String format = "###,###.#";
+
+        if(num > 9999) {
+           format = "###,###";
+        }
+        
+        DecimalFormat oneDForm = new DecimalFormat(format);
 		
 		return oneDForm.format((double) num/1000) + context.getResources().getString(R.string.fb_like_thousands);
 		

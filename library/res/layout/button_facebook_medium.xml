@@ -8,44 +8,44 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_button_shares_normal"
+        android:background="@drawable/bg_button_facebook_medium"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingRight="5dp" >
+        android:padding="4dp" >
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_like_normal" />
+            android:src="@drawable/icon_fb" />
 
         <TextView
-            style="@style/FbLikeButtonTextNormal"
+            style="@style/FbLikeButtonTextMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/fb_like" />
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/fb_like_cloud"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_baloon_normal"
-        android:visibility="gone">
+        android:background="@drawable/bg_cloud_facebook_medium"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
 
         <ProgressBar
             android:id="@+id/fb_like_cloud_progress"
             style="@android:style/Widget.ProgressBar.Small"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/fb_like_cloud_text"
-            style="@style/FbLikeButtonCloudTextNormal"
+            style="@style/FbLikeButtonCloudTextMedium"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:visibility="gone" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>

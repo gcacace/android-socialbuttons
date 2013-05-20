@@ -25,24 +25,11 @@ import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 
-public class FacebookSharesButton extends LinearLayout {
+public class FacebookSharesButton extends AbstractSharesButton {
 
-	public static final int TYPE_NORMAL = 0;
-	public static final int TYPE_MEDIUM = 1;
-
-	public static final int ANNOTATION_NONE = 0;
-	public static final int ANNOTATION_BUBBLE = 1;
-	public static final int ANNOTATION_BUBBLE_ONLOAD = 2;
-
-	private String mSharesUrl = null;
-	private int mAnnotation = ANNOTATION_NONE;
-	private int mType = ANNOTATION_NONE;
-	private boolean mFetched = false;
+    public static final int TYPE_MEDIUM = 1;
 
 	private class SharesCountFetcherTask extends AsyncTask<String, Void, Long> {
 
@@ -79,25 +66,7 @@ public class FacebookSharesButton extends LinearLayout {
 		@Override
 		protected void onPostExecute(Long result) {
 
-			TextView sharesText = (TextView) findViewById(R.id.fb_like_cloud_text);
-			ProgressBar sharesProgress = (ProgressBar) findViewById(R.id.fb_like_cloud_progress);
-			View sharesCloud = findViewById(R.id.fb_like_cloud);
-
-			if(result != null) {
-				mFetched = true;
-				sharesText.setText(UIUtils.numberToShortenedString(getContext(), result));
-			} else {
-				mFetched = false;
-				sharesText.setText(getResources().getString(R.string.fb_like_failed));
-			}
-
-			if(mAnnotation == ANNOTATION_BUBBLE || (mAnnotation == ANNOTATION_BUBBLE_ONLOAD && mFetched)) {
-				sharesCloud.setVisibility(View.VISIBLE);
-			} else {
-				sharesCloud.setVisibility(View.GONE);
-			}
-			sharesProgress.setVisibility(View.GONE);
-			sharesText.setVisibility(View.VISIBLE);
+           onSharesDownloaded(result);
 
 		}
 
@@ -119,7 +88,7 @@ public class FacebookSharesButton extends LinearLayout {
 		initView(attrs);
 	}
 
-	private void initView(AttributeSet attrs) {
+	protected void initView(AttributeSet attrs) {
 		LayoutInflater inflater = LayoutInflater.from(getContext());
 
 		if(attrs != null) {
@@ -128,27 +97,25 @@ public class FacebookSharesButton extends LinearLayout {
 			setSharesUrl(a.getString(R.styleable.FacebookSharesButton_fbsharesUrl));
 			setType(a.getInt(R.styleable.FacebookSharesButton_fbtype, TYPE_NORMAL));
 			setAnnotation(a.getInt(R.styleable.FacebookSharesButton_fbannotation, ANNOTATION_NONE));
+            setHideIfZero(a.getBoolean(R.styleable.FacebookSharesButton_fbhideIfZero, false));
 
 			a.recycle();
 
 		}
 
 		// Inflating the right layout
-		switch(mType) {
+		switch(getType()) {
 
 		case TYPE_MEDIUM:
 
-			inflater.inflate(R.layout.button_shares_medium, this);
+			inflater.inflate(R.layout.button_facebook_medium, this);
 			break;
 
 		default:
 
-			inflater.inflate(R.layout.button_shares_normal, this);
+			inflater.inflate(R.layout.button_facebook_normal, this);
 
 		}
-
-		// Enabling bubble if needed
-        checkAndManageAnnotation();
 
 		setOnClickListener(new OnClickListener() {
 
@@ -182,98 +149,15 @@ public class FacebookSharesButton extends LinearLayout {
 			}
 		});
 
+        // Call the parent to start the fetching routine
+        super.initView(attrs);
+
 	}
 
-    private void checkAndManageAnnotation() {
+    @Override
+    protected void downloadShares(String sharesUrl) {
 
-        // Enabling bubble if needed
-        switch(mAnnotation) {
-
-            case ANNOTATION_BUBBLE:
-
-                findViewById(R.id.fb_like_cloud).setVisibility(View.VISIBLE);
-                break;
-
-            default:
-
-                findViewById(R.id.fb_like_cloud).setVisibility(View.GONE);
-
-        }
+        new SharesCountFetcherTask().execute(sharesUrl);
 
     }
-
-	/**
-	 * Setter for the attribute <b>sharesUrl</b>
-	 * @param sharesUrl the URL to be passed to Facebook Graph Apis to count shares
-	 */
-	public void setSharesUrl(String sharesUrl) {
-		mSharesUrl = sharesUrl;
-	}
-
-	/**
-	 * Getter for the attribute <b>sharesUrl</b>
-	 */
-	public String getSharesUrl() {
-		return mSharesUrl;
-	}
-
-	/**
-	 * Getter for the attribute <b>annotation</b>
-	 */
-	public int getAnnotation() {
-		return mAnnotation;
-	}
-
-	/**
-	 * Setter for the attribute <b>annotation</b>
-	 * @param annotation the kind of annotation display, can be {@link #ANNOTATION_NONE}, {@link #ANNOTATION_BUBBLE} and {@link #ANNOTATION_BUBBLE_ONLOAD}
-	 */
-	public void setAnnotation(int annotation) {
-		mAnnotation = annotation;
-	}
-
-	/**
-	 * Getter for the attribute <b>type</b>
-	 */
-	public int getType() {
-		return mType;
-	}
-
-	/**
-	 * Setter for the attribute <b>type</b>
-	 * @param type the kind of share button, in size, can be {@link #TYPE_NORMAL} and {@link #TYPE_MEDIUM}
-	 */
-	public void setType(int type) {
-		mType = type;
-	}
-
-	/**
-	 * This method execute an asynchronous HTTP call to Facebook Graph Apis,
-	 * to fetch the shares count of the <b>sharesUrl</b>.
-	 * Before calling this method, please set this value using {@link #setSharesUrl(String)}.
-	 */
-	public void fetchShares() {
-
-        // Enabling bubble if needed
-        checkAndManageAnnotation();
-
-		String sharesUrl = getSharesUrl();
-		if(sharesUrl != null && !mFetched) {
-
-			TextView sharesText = (TextView) findViewById(R.id.fb_like_cloud_text);
-			ProgressBar sharesProgress = (ProgressBar) findViewById(R.id.fb_like_cloud_progress);
-
-			sharesProgress.setVisibility(View.VISIBLE);
-			sharesText.setVisibility(View.GONE);
-
-			new SharesCountFetcherTask().execute(getSharesUrl());
-
-		}
-
-	}
-
-	public void refreshShares() {
-		mFetched = false;
-		fetchShares();
-	}
 }

@@ -11,6 +11,7 @@
             <enum name="bubble" value="1" />
             <enum name="bubble_onload" value="2" />
         </attr>
+        <attr name="fbhideIfZero" format="boolean" />
     </declare-styleable>
     <declare-styleable name="TwitterSharesButton">
         <attr name="twsharesUrl" format="string" />
@@ -24,5 +25,6 @@
             <enum name="bubble" value="1" />
             <enum name="bubble_onload" value="2" />
         </attr>
+        <attr name="twhideIfZero" format="boolean" />
     </declare-styleable>
 </resources>

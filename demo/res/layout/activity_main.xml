@@ -15,14 +15,15 @@
         android:paddingBottom="10dp"
         android:text="Like button with URL parameter passed by XML attribute:" />
 
-    <it.gcacace.facebook.sharesbutton.FacebookSharesButton
-        xmlns:socialbutton="http://schemas.android.com/apk/res-auto"
+    <it.gcacace.android.socialbuttons.FacebookSharesButton
+        xmlns:socialbutton="http://schemas.android.com/apk/res/it.gcacace.android.socialbuttons.demo"
         android:id="@+id/sharesButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        socialbutton:fbsharesUrl="http://www.fanpage.it/"
+        socialbutton:fbsharesUrl="http://www.fanpage.it/se-hai-vent-anni-vattene-dall-italia/"
         socialbutton:fbtype="normal"
-        socialbutton:fbannotation="bubble" />
+        socialbutton:fbannotation="bubble"
+        socialbutton:fbhideIfZero="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,10 +32,16 @@
         android:paddingBottom="10dp"
         android:text="Like button with URL parameter passed programmatically:" />
 
-    <it.gcacace.facebook.sharesbutton.TwitterSharesButton
-        xmlns:socialbutton="http://schemas.android.com/apk/res-auto"
+    <it.gcacace.android.socialbuttons.TwitterSharesButton
+        xmlns:socialbutton="http://schemas.android.com/apk/res/it.gcacace.android.socialbuttons.demo"
         android:id="@+id/sharesButton2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        socialbutton:twtype="normal"
+        socialbutton:twannotation="bubble_onload"
+        socialbutton:twhideIfZero="false"
+        socialbutton:twsharesPrefix="This is a short description of this link"
+        socialbutton:twsharesSuffix="via @fanpage"
+            />
 
 </LinearLayout>
