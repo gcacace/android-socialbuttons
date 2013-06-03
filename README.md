@@ -13,6 +13,7 @@ A set of social buttons with shares count, and interactions with native apps, to
  * No Facebook or Twitter SDK needed
  * No tricky WebView
  * Native Social App detection
+ * Can hide shares count baloon if zero
  * Shares count in a formatted Facebook style
  * Localized in english, french, german, italian and spanish
 
@@ -35,7 +36,7 @@ or
 <dependency>
 	<groupId>it.gcacace.android.socialbuttons</groupId>
 	<artifactId>library</artifactId>
-	<version>0.1</version>
+	<version>1.0</version>
 </dependency>
 ```
 

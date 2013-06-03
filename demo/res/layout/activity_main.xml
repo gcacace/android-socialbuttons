@@ -26,6 +26,24 @@
         socialbutton:fbhideIfZero="true" />
 
     <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:text="Like button with medium layout:" />
+
+    <it.gcacace.android.socialbuttons.FacebookSharesButton
+            xmlns:socialbutton="http://schemas.android.com/apk/res/it.gcacace.android.socialbuttons.demo"
+            android:id="@+id/sharesButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            socialbutton:fbsharesUrl="http://www.facebook.com/"
+            socialbutton:fbtype="medium"
+            socialbutton:fbannotation="bubble"
+            socialbutton:fbhideIfZero="true"
+            />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
