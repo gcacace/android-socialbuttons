@@ -53,7 +53,7 @@ public abstract class AbstractSharesButton extends LinearLayout {
     protected void checkAndManageAnnotation() {
 
         // Enabling bubble if needed
-        boolean hasToShow = false;
+        boolean hasToShow;
 
         switch(mAnnotation) {
 
@@ -114,7 +114,6 @@ public abstract class AbstractSharesButton extends LinearLayout {
 
         TextView sharesText = (TextView) findViewById(R.id.fb_like_cloud_text);
         ProgressBar sharesProgress = (ProgressBar) findViewById(R.id.fb_like_cloud_progress);
-        View sharesCloud = findViewById(R.id.fb_like_cloud);
 
         if(result != null) {
             setIsFetched(true);

@@ -4,10 +4,10 @@
 	<groupId>it.gcacace.android.socialbuttons</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0</version>
-	<name>android-socialbuttons</name>
+	<version>1.0.1</version>
+	<name>android-it.gcacace.android.socialbuttons</name>
 	<description>A set of social buttons with shares count, and interactions with native apps, to let the user share links using his favourite social apps.</description>
-	<url>https://github.com/gcacace/android-socialbuttons</url>
+	<url>https://github.com/gcacace/android-it.gcacace.android.socialbuttons</url>
 	
 	<licenses>
 		<license>
@@ -17,9 +17,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<url>https://github.com/gcacace/android-socialbuttons</url>
-		<connection>scm:git:git://github.com/gcacace/android-socialbuttons.git</connection>
-		<developerConnection>scm:git:git@github.com:gcacace/android-socialbuttons.git</developerConnection>
+		<url>https://github.com/gcacace/android-it.gcacace.android.socialbuttons</url>
+		<connection>scm:git:git://github.com/gcacace/android-it.gcacace.android.socialbuttons.git</connection>
+		<developerConnection>scm:git:git@github.com:gcacace/android-it.gcacace.android.socialbuttons.git</developerConnection>
 		<tag>v0.2</tag>
 	</scm>
 	<developers>
