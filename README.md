@@ -59,7 +59,7 @@ or
     xmlns:tools="http://schemas.android.com/tools">
 	...
     <it.gcacace.android.socialbuttons.FacebookSharesButton
-        xmlns:socialbutton="http://schemas.android.com/apk/res/it.gcacace.android.socialbuttons.demo"
+        xmlns:socialbutton="http://schemas.android.com/apk/res/it.gcacace.android.it.gcacace.android.demo"
         android:id="@+id/sharesButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
