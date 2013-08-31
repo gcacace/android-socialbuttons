@@ -5,12 +5,12 @@
 	<groupId>it.gcacace.android.socialbuttons</groupId>
 	<artifactId>library</artifactId>
 	<packaging>apklib</packaging>
-	<name>android-socialbuttons-library</name>
+	<name>android-it.gcacace.android.socialbuttons-library</name>
 	
 	<parent>
 		<groupId>it.gcacace.android.socialbuttons</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.0</version>
+		<version>1.0.1</version>
 	</parent>
 	
 	<dependencies>
@@ -27,6 +27,7 @@
 	</dependencies>
 
     <build>
+        <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
